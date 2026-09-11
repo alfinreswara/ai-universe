@@ -1,0 +1,4 @@
+'use client';
+import { Component,type ReactNode } from 'react';import Link from 'next/link';import { Orbit } from 'lucide-react';import { track } from '@/lib/analytics';
+export function Fallback(){return <div className="scene-fallback"><Orbit size={64} strokeWidth={.7}/><h2>A universe within reach.</h2><p>3D is unavailable on this device. Explore every model and its sources in the directory, or choose a provider from the navigation.</p><Link className="primary-button" href="/models">Browse models</Link></div>;}
+export default class SceneBoundary extends Component<{children:ReactNode},{failed:boolean}>{state={failed:false};static getDerivedStateFromError(){return{failed:true}}componentDidCatch(){track('fallback_used',{reason:'render-error'})}render(){return this.state.failed?<Fallback/>:this.props.children;}}

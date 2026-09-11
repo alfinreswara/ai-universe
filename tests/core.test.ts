@@ -1,0 +1,11 @@
+import { test } from 'node:test';import assert from 'node:assert/strict';
+import {validateCatalog,searchCatalog,parseSelection,parentSelection,selectionUrl} from '../src/lib/catalog';
+import {providerPosition,modelPosition,chooseQuality,seededRandom,cameraTarget} from '../src/lib/scene-layout';
+import {selectionState} from '../src/store/universe';
+import {models,providers} from '../src/data/catalog';
+test('all records have valid hierarchy and provenance',()=>assert.equal(validateCatalog().models,16));
+test('search finds models, providers, families and capabilities',()=>{for(const q of ['GPT-4.1','Anthropic','Llama','Vision'])assert.ok(searchCatalog(q).length);assert.equal(searchCatalog('impossible-value').length,0);});
+test('deep links normalize inconsistent parents and reject unknown targets',()=>{assert.deepEqual(parseSelection(new URLSearchParams('provider=meta&model=gpt-4-1')),{provider:'openai',family:'openai-gpt',model:'gpt-4-1'});assert.deepEqual(parseSelection(new URLSearchParams('model=invalid')),{});});
+test('selection URL round trip and hierarchical back',()=>{const s={provider:'openai',family:'openai-gpt',model:'gpt-4-1'};assert.deepEqual(parseSelection(new URLSearchParams(selectionUrl(s).split('?')[1])),s);assert.equal(selectionState(parentSelection(s)),'FAMILY');assert.equal(selectionState(parentSelection(parentSelection(s))),'PROVIDER');assert.equal(selectionState({}),'UNIVERSE');});
+test('scene is deterministic, finite, spatially varied and separated',()=>{assert.equal(seededRandom(12)(),seededRandom(12)());assert.ok(new Set(providers.map(p=>providerPosition(p.id)[2])).size>3);models.forEach(m=>assert.ok(modelPosition(m.id).every(Number.isFinite)));assert.ok(cameraTarget({model:models[0].id}).radius>0);});
+test('quality adapts to viewport, memory and pixel ratio',()=>{assert.equal(chooseQuality(390,8,3),'LOW');assert.equal(chooseQuality(1440,4),'LOW');assert.equal(chooseQuality(1440,8,1),'HIGH');assert.equal(chooseQuality(1000,8,2),'MEDIUM');});

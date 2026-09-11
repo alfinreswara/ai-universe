@@ -1,0 +1,4 @@
+'use client';
+import { AdditiveBlending,Color } from 'three';
+import { useUniverse } from '@/store/universe';
+export default function Nebula(){const q=useUniverse(s=>s.quality);if(q==='LOW')return null;return <group>{[[-12,4,-22,26,'#22324a'],[16,-5,-29,30,'#352d49'],[4,14,-42,28,'#34404c']].map((v,i)=><mesh key={i} position={[Number(v[0]),Number(v[1]),Number(v[2])]}><planeGeometry args={[Number(v[3]),Number(v[3])]}/><shaderMaterial transparent depthWrite={false} blending={AdditiveBlending} uniforms={{tint:{value:new Color(v[4])}}} vertexShader="varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}" fragmentShader="varying vec2 vUv;uniform vec3 tint;void main(){vec2 p=vUv-.5;float a=exp(-dot(p*3.,p*3.)*3.);float n=.6+.2*sin(p.x*23.+sin(p.y*17.));gl_FragColor=vec4(tint,a*n*.3);}"/></mesh>)}</group>;}

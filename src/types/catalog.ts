@@ -1,0 +1,13 @@
+import { z } from 'zod';
+export const providerSchema = z.object({ id: z.string(), slug: z.string(), name: z.string(), description: z.string(), websiteUrl: z.url(), documentationUrl: z.url(), color: z.string(), signature: z.enum(['spiral', 'ring', 'elliptical']), published: z.boolean() });
+export const familySchema = z.object({ id: z.string(), providerId: z.string(), slug: z.string(), name: z.string(), description: z.string(), classificationType: z.enum(['official', 'internal']), sortOrder: z.number() });
+export const modelSchema = z.object({ id: z.string(), providerId: z.string(), familyId: z.string(), slug: z.string(), name: z.string(), description: z.string(), status: z.enum(['active', 'deprecated', 'unknown']), releaseDate: z.string().nullable(), contextWindow: z.number().positive().nullable(), apiAvailable: z.boolean().nullable(), openWeights: z.boolean().nullable(), inputModalities: z.array(z.string()), outputModalities: z.array(z.string()), capabilities: z.array(z.string()), officialUrl: z.url(), docsUrl: z.url().nullable(), pricingUrl: z.url().nullable(), lastVerifiedAt: z.string(), published: z.boolean() });
+export const sourceSchema = z.object({ id: z.string(), modelId: z.string(), providerId: z.string(), url: z.url(), sourceType: z.enum(['documentation','announcement','model_card']), title: z.string(), verifiedAt: z.string(), lastCheckedAt: z.string(), notes: z.string() });
+export type Provider = z.infer<typeof providerSchema>;
+export type ModelFamily = z.infer<typeof familySchema>;
+export type AIModel = z.infer<typeof modelSchema>;
+export type Source = z.infer<typeof sourceSchema>;
+export type Quality = 'LOW' | 'MEDIUM' | 'HIGH';
+export type CameraState = 'INTRO' | 'UNIVERSE' | 'PROVIDER' | 'FAMILY' | 'MODEL' | 'DETAIL' | 'SEARCH_TARGET' | 'TRANSITION';
+export type Selection = { provider?: string; family?: string; model?: string };
+export type Vec3 = [number, number, number];

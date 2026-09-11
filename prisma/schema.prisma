@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+model Provider {
+  id String @id
+  slug String @unique
+  name String
+  description String
+  websiteUrl String
+  documentationUrl String
+  color String
+  signature String
+  published Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  families ModelFamily[]
+  models Model[]
+  sources Source[]
+}
+model ModelFamily {
+  id String @id
+  providerId String
+  slug String @unique
+  name String
+  description String
+  classificationType String
+  sortOrder Int
+  provider Provider @relation(fields: [providerId], references: [id])
+  models Model[]
+}
+model Model {
+  id String @id
+  providerId String
+  familyId String
+  slug String
+  name String
+  description String
+  status String @default("unknown")
+  releaseDate String?
+  deprecationDate String?
+  contextWindow Int?
+  apiAvailable Boolean?
+  openWeights Boolean?
+  inputModalities String[]
+  outputModalities String[]
+  officialUrl String
+  docsUrl String?
+  pricingUrl String?
+  lastVerifiedAt String
+  published Boolean @default(false)
+  provider Provider @relation(fields: [providerId], references: [id])
+  family ModelFamily @relation(fields: [familyId], references: [id])
+  capabilities ModelCapability[]
+  sources Source[]
+  @@unique([providerId,slug])
+}
+model Capability {
+  id String @id
+  name String @unique
+  category String
+  models ModelCapability[]
+}
+model ModelCapability {
+  modelId String
+  capabilityId String
+  confidence String
+  sourceId String
+  model Model @relation(fields: [modelId], references: [id])
+  capability Capability @relation(fields: [capabilityId], references: [id])
+  source Source @relation(fields: [sourceId], references: [id])
+  @@id([modelId,capabilityId])
+}
+model Source {
+  id String @id
+  modelId String
+  providerId String
+  url String
+  sourceType String
+  title String
+  verifiedAt String
+  lastCheckedAt String
+  notes String
+  model Model @relation(fields: [modelId], references: [id])
+  provider Provider @relation(fields: [providerId], references: [id])
+  capabilities ModelCapability[]
+}

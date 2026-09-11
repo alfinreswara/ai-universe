@@ -1,0 +1,3 @@
+import Link from 'next/link';import { ArrowUpRight } from 'lucide-react';import { articles } from '@/data/learn';
+export const metadata={title:'Learn',alternates:{canonical:'/learn/'}};
+export default function LearnPage(){return <main id="main" className="directory-page"><div className="eyebrow">A LITTLE CONTEXT GOES A LONG WAY</div><h1>Make sense of the universe.</h1><p className="page-description">Simple explanations for a fast-moving field.</p><div className="learn-grid">{articles.map((a,i)=><Link href={`/learn/${a.slug}`} key={a.slug}><span className="article-number">0{i+1}</span><span className="eyebrow">{a.category}</span><h2>{a.title}</h2><p>{a.description}</p><span className="read-article">Read the guide<ArrowUpRight size={17}/></span></Link>)}</div></main>;}
