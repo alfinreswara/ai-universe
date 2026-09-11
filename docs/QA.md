@@ -34,3 +34,11 @@ Using the Codex in-app browser against the local development server:
 The settings panel sampled 24 FPS during an early low-quality development-session interval and 50 FPS in a later high-quality interval. These are observations of this constrained browser session, not comparable benchmark runs or a guaranteed 60 FPS result. The app automatically reduces quality when sustained measured frame rate falls below 30 FPS, unless a user explicitly overrides it. A follow-up on real target desktop/mobile hardware is recommended before treating all PRD performance targets as certified.
 
 Quality presets change actual star/galaxy point counts and DPR. The heavy 3D scene is lazy loaded. All profiles are generated as HTML without requiring WebGL. Production bundle sizes and route output are provided by the final build.
+
+## Final local delivery
+
+- Final `npm run build` exited 0; all 41 static-generation entries completed. Explore first-load JS is 184 kB; shared JS is 103 kB. Heavy Three.js code is in separately loaded chunks.
+- `python3 scripts/check-export.py` passed: 38 HTML files, all internal links and asset paths present, canonical metadata and model facts present in generated HTML.
+- Production export size: 4.4 MB; deployment-format local archive: about 798 KB at `/tmp/ai-universe-deploy.tar.gz`.
+- Production export served locally on port 3001 and checked in the in-app browser. Provider selection and family controls work; no error-level console logs were reported.
+- Owner explicitly selected local-only delivery. No source push, version save, or deployment was performed. The registered Sites identity contains only the site title/description, not the project source.
