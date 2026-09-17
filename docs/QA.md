@@ -42,3 +42,15 @@ Quality presets change actual star/galaxy point counts and DPR. The heavy 3D sce
 - Production export size: 4.4 MB; deployment-format local archive: about 798 KB at `/tmp/ai-universe-deploy.tar.gz`.
 - Production export served locally on port 3001 and checked in the in-app browser. Provider selection and family controls work; no error-level console logs were reported.
 - Owner explicitly selected local-only delivery. No source push, version save, or deployment was performed. The registered Sites identity contains only the site title/description, not the project source.
+
+## Observatory redesign — 2026-09-17
+
+- Replaced the small wireframe galaxy cores with rotating procedural planets, terrain/cloud and gas surfaces, directional day/night shading, atmosphere shells, layered rings, dust, and orbiting satellites.
+- Added a surrounding colored starfield and nebula texture baked to an offscreen render target. Low quality reduces surface noise octaves and geometry; dimmed background bodies skip the expensive surface calculation.
+- Updated the observatory UI, provider rail, labels, hierarchy lines, map legend, and responsive camera framing. Visual scale is illustrative, not a capability ranking.
+- Visually checked the desktop overview and provider/model focus, plus overview and model drawer at 390 × 844. Corrected the mobile model camera so the planet remains visible above its drawer. Restored the browser's normal viewport after mobile QA.
+- Provider → GPT → GPT-4.1, model deep link reload, close detail, and reset interactions were checked in the local browser. No shader errors were captured in those checks.
+- All seven existing tests pass with `npm test`; TypeScript and ESLint checks passed. A production build generated all 41 entries, and the export checker validated 38 HTML pages and their links/assets. The final refinement build also exited 0 and its export-link check passed.
+- The production command palette found Claude Opus 4 and opened its normalized model URL; toggling labels and switching to High quality worked without console errors. A Low-quality production sample reported 46 FPS; this is one local observation, not a benchmark or guarantee.
+- Kept the scene toolbar beside the desktop detail panel and above the mobile drawer so the panel does not cover zoom/reset controls.
+- No new dependencies or external image assets are required. Physical-device GPU performance has not been benchmarked.

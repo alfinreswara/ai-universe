@@ -1,0 +1,159 @@
+/* Observatory skin: the scene leads, controls sit quietly around its edges. */
+:root { --bg: #060910; --text: #e9edf5; --muted: #8a97ab; --accent: #a6e5d3; }
+html, body { font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+.topbar { height: 76px; padding: 0 34px; background: #080c13; border-color: #c5ddff10; }
+.brand { font-size: 13px; letter-spacing: .17em; gap: 11px; }
+.brand > svg { width: 29px; height: 29px; color: #b4eadc; filter: drop-shadow(0 0 10px #80dfd22c); }
+.brand-point { color: #b4eadc; font-size: 7px; }
+.main-nav { gap: 34px; margin-left: 30px; }
+.main-nav a { font-size: 12px; color: #8691a3; }
+.main-nav a.active { color: #d1eee4; }
+.main-nav a.active:after { width: 26px; left: calc(50% - 13px); background: #a6e5d3; box-shadow: 0 -2px 15px #a6e5d343; }
+.search-trigger { font-size: 11px; border-color: #acbdd71c; border-radius: 8px; padding: 9px 11px; background: #ffffff03; }
+.search-trigger kbd { font-size: 9px; padding: 2px 5px; }
+.explorer { height: calc(100svh - 76px); min-height: 560px; background: #050810; }
+.scene-vignette { background: linear-gradient(90deg, #060910f0, #060910bb 18%, #06091030 32%, transparent 48%), linear-gradient(0deg, #060910f5, transparent 22%, transparent 80%, #06091035); }
+.explore-heading { left: 34px; top: 38px; max-width: 295px; pointer-events: auto; }
+.explore-heading .eyebrow { font-size: 8px; letter-spacing: .21em; color: #99b4b3; gap: 9px; }
+.observatory-dot { height: 5px; width: 5px; border-radius: 50%; background: #a1e8cc; box-shadow: 0 0 12px #9ee9c8a0; }
+.explore-heading h1 { font-size: clamp(37px, 3.3vw, 49px); font-weight: 450; line-height: 1.07; letter-spacing: -2.2px; margin: 21px 0 16px; }
+.explore-heading h1 span { color: #a4c2c0; }
+.explore-heading p { font-size: 12px; line-height: 1.9; color: #8393a6; max-width: 260px; }
+.heading-actions { display: flex; align-items: center; gap: 16px; margin-top: 23px; }
+.heading-actions .primary-button { border-radius: 6px; background: #c5eadf; border: 1px solid #daf3e9; color: #173c35; padding: 9px 13px; font-size: 11px; min-height: 35px; gap: 12px; box-shadow: 0 2px 24px #b4e7d110; }
+.heading-actions .primary-button:hover { background: #e2fff5; transform: translateY(-1px); }
+.heading-directory { font-size: 10px; display: flex; align-items: center; gap: 5px; color: #9ba6b5; }
+.atlas-stats { display: flex; gap: 13px; align-items: center; margin-top: 24px; color: #718093; font-size: 10px; }
+.atlas-stats strong { font-weight: 500; color: #cad3df; margin-right: 4px; font-size: 13px; }
+.atlas-stats > i { width: 1px; height: 11px; background: #a1b9c826; }
+.atlas-curated { display: none; }
+.provider-rail { left: 34px; top: 340px; width: 234px; max-height: calc(100% - 435px); overflow: auto; scrollbar-width: thin; scrollbar-color: #c8dbed20 transparent; }
+.rail-heading { padding: 0 0 13px; font-size: 8px; letter-spacing: .19em; border-bottom: 1px solid #d0ddff17; margin-bottom: 9px; color: #7c8d9e; }
+.rail-heading > span { font-size: 9px; color: #acc8bd; border: 1px solid #bed6cc22; border-radius: 3px; padding: 0 4px; }
+.provider-row { position: relative; min-height: 33px; padding: 7px 7px 7px 0; font-size: 11px; gap: 12px; color: #a4b0c1; border-radius: 5px; }
+.provider-row:hover, .provider-row.active { background: linear-gradient(90deg, #c8e6ff0d, #c8e6ff03); }
+.provider-row:hover .provider-orb { transform: scale(1.2); }
+.provider-index { width: 14px; font-size: 8px; color: #4e6075; }
+.provider-orb { width: 13px; height: 13px; flex-shrink: 0; border-radius: 50%; background: radial-gradient(circle at 30% 26%, #ffffffe8, var(--row-color) 20%, color-mix(in srgb, var(--row-color) 36%, #101827) 55%, #080c14 82%); box-shadow: -1px -1px 5px color-mix(in srgb, var(--row-color) 16%, transparent); transition: transform .25s; }
+.provider-model-count { margin-left: auto; color: #53667b; font: 9px ui-monospace, monospace; }
+.provider-row > svg:last-child { margin-left: 0; width: 11px; }
+.rail-note { margin-top: 12px; padding-top: 14px; font-size: 9px; gap: 7px; color: #718297; }
+.pulse-dot { background: #91cdb8; box-shadow: 0 0 9px #91cdb833; }
+.breadcrumb { top: 30px; right: 34px; border: 1px solid #cbdfff16; border-radius: 20px; padding: 8px 13px; background: #0b111c60; backdrop-filter: blur(12px); font-size: 10px; gap: 8px; }
+.breadcrumb button { color: #adbdce; }
+.breadcrumb button > svg { color: #97cdbd; }
+.scene-edition { position: absolute; top: 85px; right: 37px; z-index: 3; display: flex; gap: 10px; align-items: center; color: #5a6d83; font: 8px ui-monospace, monospace; letter-spacing: .1em; pointer-events: none; }
+.scene-edition i { width: 13px; height: 1px; background: #8ba4bd40; }
+.celestial-label { padding: 8px 12px; background: #080e186b; border-radius: 7px; font-size: 11px; backdrop-filter: blur(10px); letter-spacing: .02em; }
+.celestial-label-name { display: flex; align-items: center; justify-content: center; gap: 7px; }
+.celestial-label-name > i { width: 4px; height: 4px; border-radius: 50%; background: var(--planet-color, #b8dcd2); box-shadow: 0 0 7px var(--planet-color, #b8dcd2); }
+.celestial-label small { color: #7c8da4; font: 6px ui-monospace, monospace; letter-spacing: .08em; margin-top: 6px; }
+.celestial-label small > span { margin: 0 3px; color: #506278; }
+.celestial-label .label-arrow { opacity: .5; font-size: 10px; margin-left: 2px; color: #a9beca; }
+.celestial-label:hover, .celestial-label.selected { border-color: #bceadf40; background: #112022db; }
+.hero-label { padding: 11px 17px; border: 1px solid #a8e3d12e; background: linear-gradient(120deg, #132925bb, #0b1726b0); box-shadow: 0 6px 26px #02080b55; }
+.hero-label .celestial-label-name { font-size: 14px; gap: 9px; }
+.hero-label small { font-size: 7px; }
+.family-label { color: #c0dfd7; font-size: 10px; border-color: #a3ddcc40; background: #0b191ede; }
+.model-label { font-size: 12px; background: #09121bd9; }
+.model-label small { font-size: 9px; text-transform: none; }
+.explore-invitation { bottom: 91px; left: calc(50% + 66px); font-size: 11px; color: #bbc8d5; gap: 12px; }
+.explore-invitation small { font-size: 9px; color: #6f8299; margin-top: 6px; }
+.orbital-symbol { color: #b1dccc; border-color: #b9dccb24; width: 37px; height: 37px; }
+.scene-legend { position: absolute; right: 35px; bottom: 89px; display: flex; flex-wrap: wrap; gap: 12px; width: 175px; z-index: 3; pointer-events: none; }
+.scene-legend > span { display: flex; gap: 6px; align-items: center; color: #8a9bb0; font-size: 8px; }
+.scene-legend small { color: #53677f; font-size: 7px; width: 100%; letter-spacing: .01em; }
+.legend-planet { width: 6px; height: 6px; border-radius: 50%; background: #a6c0d0; }
+.legend-orbit { width: 11px; height: 6px; border-radius: 50%; border: 1px solid #8da8bd; transform: rotate(-25deg); }
+.scene-tools { right: 34px; bottom: 172px; border-color: #b5cedd1c; background: #0b131b85; border-radius: 10px; padding: 5px; gap: 3px; }
+.scene-tools .icon-button { width: 30px; height: 30px; color: #8d9fb2; }
+.scene-tools .icon-button[aria-pressed=true] { color: #b5e8d4; background: #a9dbc90a; }
+.explore-footer { height: 57px; padding: 0 34px; border-color: #bbddf317; background: #080e16b8; font-size: 10px; }
+.view-indicator > svg { color: #a6d7c5; }
+.view-indicator > span:first-of-type { color: #b7c7d8; }
+.coordinates { font-size: 8px; letter-spacing: .15em; color: #5e738a; }
+.control-hints { font-size: 9px; color: #6c7f96; gap: 13px; }
+.quality-button { font-size: 10px; }
+.quality-bars { color: #8fc2ac; }
+.detail-panel { border-color: #bdddd12a; background: #0b1521ee; border-radius: 12px; }
+.explorer:has(.detail-panel) .scene-tools { right: 408px; }
+.is-focused .explore-heading { max-width: 330px; }
+.is-focused .explore-heading h1 { font-size: 41px; line-height: 1.13; }
+.is-focused .provider-rail { top: 260px; max-height: calc(100% - 365px); }
+.is-focused .provider-row { min-height: 44px; font-size: 12px; }
+.is-focused .rail-note { white-space: normal; }
+@media (min-width: 1600px) {
+  .explore-heading { left: 44px; top: 48px; max-width: 335px; }
+  .explore-heading h1 { font-size: 54px; }
+  .explore-heading p { font-size: 13px; max-width: 285px; }
+  .provider-rail { left: 44px; top: 370px; width: 258px; }
+  .provider-row { min-height: 38px; font-size: 12px; }
+}
+@media (max-height: 820px) and (min-width: 701px) {
+  .explore-heading { top: 25px; }
+  .explore-heading h1 { font-size: 38px; margin: 16px 0 12px; }
+  .heading-actions { margin-top: 15px; }
+  .atlas-stats { margin-top: 17px; }
+  .provider-rail { top: 282px; max-height: calc(100% - 340px); }
+  .provider-row { min-height: 29px; padding-top: 5px; padding-bottom: 5px; }
+  .rail-note { display: none; }
+}
+@media (max-width: 1100px) and (min-width: 701px) {
+  .topbar { padding: 0 25px; }
+  .explore-heading, .provider-rail { left: 25px; }
+  .explore-heading { max-width: 255px; }
+  .explore-heading h1 { font-size: 39px; }
+  .explore-heading p { max-width: 235px; }
+  .heading-actions { gap: 10px; }
+  .heading-directory { font-size: 9px; }
+  .provider-rail { width: 205px; }
+  .scene-edition, .scene-legend { display: none; }
+  .explore-invitation { left: calc(50% + 90px); }
+  .is-focused .explore-heading { max-width: 255px; }
+  .explorer:has(.detail-panel) .scene-tools { right: 360px; }
+}
+@media (max-width: 700px) {
+  .topbar { height: 64px; padding: 0 20px; }
+  .brand { font-size: 11px; }
+  .brand > svg { width: 25px; }
+  .main-nav { top: 64px; gap: 25px; margin: 0; }
+  .explorer { height: calc(100svh - 64px); min-height: 660px; }
+  .explore-heading { top: 26px; left: 22px; right: 22px; max-width: none; pointer-events: none; }
+  .explore-heading .eyebrow { font-size: 7px; letter-spacing: .18em; }
+  .explore-heading h1 { font-size: 35px; letter-spacing: -1.5px; margin: 14px 0 10px; max-width: 300px; }
+  .explore-heading h1 br { display: none; }
+  .explore-heading h1 span { display: block; }
+  .explore-heading p { font-size: 10px; max-width: 225px; line-height: 1.8; }
+  .heading-actions { margin-top: 15px; pointer-events: auto; }
+  .heading-actions .primary-button { font-size: 10px; min-height: 32px; padding: 7px 11px; }
+  .heading-directory { font-size: 9px; }
+  .atlas-stats { display: none; }
+  .scene-vignette { background: linear-gradient(180deg, #060910dd, #06091030 25%, transparent 45%, #06091050 72%, #060910ee 90%); }
+  .breadcrumb { top: 20px; right: 18px; left: auto; max-width: 45%; font-size: 8px; padding: 6px 8px; gap: 4px; }
+  .is-overview .breadcrumb { display: none; }
+  .provider-rail, .is-focused .provider-rail { top: auto; left: 20px; right: 20px; bottom: 120px; width: auto; max-height: none; padding: 8px 0; gap: 6px; scrollbar-width: none; }
+  .provider-row, .is-focused .provider-row { min-height: 36px; padding: 8px 11px; font-size: 10px; gap: 8px; background: #0c1721c9; border: 1px solid #a7c7db20; border-radius: 7px; }
+  .provider-orb { width: 11px; height: 11px; }
+  .provider-model-count, .provider-index, .rail-heading, .rail-note, .scene-edition, .scene-legend { display: none; }
+  .scene-tools { bottom: 191px; right: 15px; padding: 4px; }
+  .scene-tools .icon-button { width: 27px; height: 29px; }
+  .explore-invitation { bottom: 76px; left: 21px; transform: none; font-size: 10px; gap: 9px; }
+  .explore-invitation small { font-size: 8px; max-width: 265px; white-space: normal; margin-top: 3px; }
+  .orbital-symbol { width: 29px; height: 29px; }
+  .celestial-label { font-size: 9px; padding: 6px 8px; }
+  .celestial-label small { display: none; }
+  .hero-label { padding: 8px 12px; }
+  .hero-label .celestial-label-name { font-size: 12px; }
+  .hero-label small { display: block; font-size: 6px; }
+  .celestial-label-name { gap: 5px; }
+  .celestial-label .label-arrow { font-size: 8px; }
+  .explore-footer { height: 52px; padding: 0 18px; font-size: 9px; }
+  .quality-button { font-size: 9px; }
+  .quality-control { gap: 4px; }
+  .is-focused .explore-heading { max-width: 265px; top: 60px; }
+  .is-focused .explore-heading h1 { font-size: 32px; }
+  .is-focused .breadcrumb { max-width: calc(100% - 36px); }
+  .detail-panel { bottom: 56px; max-height: 49%; }
+  .explorer:has(.detail-panel) .scene-tools { right: 15px; top: 195px; bottom: auto; }
+  .scene-fallback { padding-top: 260px; }
+}

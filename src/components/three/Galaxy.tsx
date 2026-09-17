@@ -1,18 +1,89 @@
 'use client';
-import { useMemo,useRef } from 'react';
+
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { AdditiveBlending,Color,Points } from 'three';
-import { qualitySettings,seededRandom } from '@/lib/scene-layout';
+import { AdditiveBlending, Color, DoubleSide, Group, MathUtils, ShaderMaterial } from 'three';
+import { qualitySettings, seededRandom } from '@/lib/scene-layout';
 import { useUniverse } from '@/store/universe';
-export default function Galaxy({color,seed,signature,dim=false}:{color:string;seed:number;signature:string;dim?:boolean}){
- const quality=useUniverse(s=>s.quality),reduced=useUniverse(s=>s.reducedMotion);const ref=useRef<Points>(null);
- const positions=useMemo(()=>{const r=seededRandom(seed+42);const count=qualitySettings[quality].dust;const a=new Float32Array(count*3);for(let i=0;i<count;i++){const radius=Math.pow(r(),.7)*4.4;const angle=(i%3)*Math.PI*2/3+radius*.9+(r()-.5)*.9;const thickness=(r()-.5)*(.7-radius*.12);a.set([Math.cos(angle)*radius,thickness,Math.sin(angle)*radius],i*3);}return a;},[quality,seed]);
- useFrame((_,d)=>{if(ref.current&&!reduced)ref.current.rotation.y+=d*.018;});
- return <group rotation={[.62+seed*.06,.1,seed*.18]}>
-  <points ref={ref}><bufferGeometry><bufferAttribute attach="attributes-position" args={[positions,3]}/></bufferGeometry><pointsMaterial color={color} size={.085} sizeAttenuation transparent opacity={dim?.04:.75} depthWrite={false} blending={AdditiveBlending}/></points>
-  {[1.7,2.9,4.1].map((r,i)=><mesh key={r} rotation={[Math.PI/2+(signature==='ring'?i*.11:0),0,0]}><ringGeometry args={[r,r+.014,100]}/><meshBasicMaterial color={color} transparent opacity={dim?.015:.19} side={2} depthWrite={false}/></mesh>)}
-  <mesh><sphereGeometry args={[.62,24,24]}/><meshBasicMaterial color={color} transparent opacity={dim?.1:1}/></mesh>
-  <mesh rotation={[-.8,0,0]}><sphereGeometry args={[.68,24,24]}/><meshBasicMaterial color="#ffffff" wireframe transparent opacity={dim?.03:.12}/></mesh>
-  <sprite scale={[3.1,3.1,3.1]}><shaderMaterial transparent depthWrite={false} blending={AdditiveBlending} uniforms={{tint:{value:new Color(color)},opacity:{value:dim?.04:.65}}} vertexShader="varying vec2 vUv;void main(){vUv=uv;vec4 mv=modelViewMatrix*vec4(0.,0.,0.,1.);mv.xy+=position.xy*3.1;gl_Position=projectionMatrix*mv;}" fragmentShader="varying vec2 vUv;uniform vec3 tint;uniform float opacity;void main(){float r=length(vUv-.5)*2.;float glow=pow(max(0.,1.-r),3.);gl_FragColor=vec4(tint,glow*opacity);}"/></sprite>
- </group>;
+import CelestialBody from './CelestialBody';
+
+const ringVertex = `
+  varying vec3 vPosition;
+  void main() {
+    vPosition = position;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+const ringFragment = `
+  uniform vec3 tint;
+  uniform float opacity;
+  varying vec3 vPosition;
+  void main() {
+    float r = length(vPosition.xy);
+    float footprint = fwidth(r);
+    float bands = sin(r * 43.0) * 0.18 * exp(-footprint * 43.0) + sin(r * 113.0) * 0.12 * exp(-footprint * 113.0) + 0.54;
+    float edge = smoothstep(1.95, 2.16, r) * (1.0 - smoothstep(3.7, 4.25, r));
+    float gap = 1.0 - smoothstep(0.025, 0.08, abs(r - 3.12));
+    float light = 0.52 + 0.48 * smoothstep(-3.0, 3.0, vPosition.x);
+    gl_FragColor = vec4(mix(tint, vec3(0.8, 0.9, 1.0), bands * 0.3), bands * edge * light * (1.0 - gap * 0.88) * opacity);
+  }
+`;
+
+export default function Galaxy({ color, seed, signature, dim = false, active = false, hero = false }: {
+  color: string; seed: number; signature: string; dim?: boolean; active?: boolean; hero?: boolean;
+}) {
+  const quality = useUniverse(s => s.quality);
+  const reduced = useUniverse(s => s.reducedMotion);
+  const particles = useRef<Group>(null);
+  const ring = useRef<ShaderMaterial>(null);
+  const uniforms = useMemo(() => ({ tint: { value: new Color(color) }, opacity: { value: 0.6 } }), [color]);
+  const { positions, colors } = useMemo(() => {
+    const random = seededRandom(seed + 42);
+    const count = Math.floor(qualitySettings[quality].dust * (hero ? 1 : 0.35));
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const tint = new Color(color);
+    for (let i = 0; i < count; i++) {
+      const radius = 2.3 + Math.pow(random(), 0.65) * 3.1;
+      const angle = random() * Math.PI * 2;
+      positions.set([Math.cos(angle) * radius, (random() - 0.5) * 0.15, Math.sin(angle) * radius], i * 3);
+      const star = tint.clone().lerp(new Color('#ffffff'), random() * 0.65).multiplyScalar(0.35 + random() * 0.65);
+      colors.set([star.r, star.g, star.b], i * 3);
+    }
+    return { positions, colors };
+  }, [quality, seed, color, hero]);
+
+  useFrame((_, delta) => {
+    if (particles.current && !reduced) particles.current.rotation.y += delta * 0.018;
+    if (ring.current) ring.current.uniforms.opacity.value = MathUtils.damp(ring.current.uniforms.opacity.value, dim ? 0.06 : active ? 0.8 : 0.58, 4, delta);
+  });
+
+  return <group>
+    <CelestialBody color={color} seed={seed} gas={signature === 'elliptical'} dim={dim} />
+    <group rotation={[0.38 + (seed % 3) * 0.16, 0.15, hero ? -0.34 : 0.25 + seed * 0.025]}>
+      {(hero || signature === 'ring') && <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[1.95, 4.25, quality === 'LOW' ? 96 : 192]} />
+        <shaderMaterial ref={ring} uniforms={uniforms} vertexShader={ringVertex} fragmentShader={ringFragment} transparent side={DoubleSide} depthWrite={false} />
+      </mesh>}
+      <group ref={particles}>
+        <points>
+          <bufferGeometry>
+            <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+            <bufferAttribute attach="attributes-color" args={[colors, 3]} />
+          </bufferGeometry>
+          <pointsMaterial vertexColors size={hero ? 0.025 : 0.035} transparent opacity={dim ? 0.05 : 0.62} depthWrite={false} blending={AdditiveBlending} />
+        </points>
+        {(hero ? [4.7, 5.35] : [3.1]).map((radius, i) => <group key={radius}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[radius, radius + 0.008, 160]} />
+            <meshBasicMaterial color={color} transparent opacity={dim ? 0.02 : 0.2} side={DoubleSide} depthWrite={false} />
+          </mesh>
+          <mesh position={[Math.cos(i * 2.7 + seed) * radius, 0, Math.sin(i * 2.7 + seed) * radius]}>
+            <sphereGeometry args={[0.055, 12, 12]} />
+            <meshBasicMaterial color={color} transparent opacity={dim ? 0.1 : 1} />
+          </mesh>
+        </group>)}
+      </group>
+    </group>
+  </group>;
 }

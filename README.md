@@ -26,8 +26,8 @@ The production site is a Next.js static export in `out/`. Serve that directory w
 
 ## Scope
 
-- Nine provider galaxies, nine official model families, sixteen curated model records.
-- Real React Three Fiber scene with procedural galaxy particle fields, layered stars, inclined orbits, and centralized GSAP camera transitions.
+- Nine provider systems, nine official model families, sixteen curated model records.
+- Real React Three Fiber scene with procedural terrain and gas planets, atmospheric rim lighting, layered rings and orbiting dust, a baked nebula sky, colored stars, and responsive GSAP camera transitions.
 - Provider → family → model navigation, source-backed detail panels, normalized shareable explore URLs.
 - Keyboard command palette; model directory with provider, family, modality, capability, weights, API, and lifecycle filters.
 - Server-generated HTML profiles and metadata; provider directory, six introductory Learn articles, sitemap, and 404/error handling.

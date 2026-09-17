@@ -1,12 +1,63 @@
 'use client';
-import { useMemo,useRef } from 'react';
+
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { AdditiveBlending, ShaderMaterial } from 'three';
-import { seededRandom,qualitySettings } from '@/lib/scene-layout';
+import { AdditiveBlending, Color, ShaderMaterial } from 'three';
+import { seededRandom, qualitySettings } from '@/lib/scene-layout';
 import { useUniverse } from '@/store/universe';
-export default function Starfield(){
- const quality=useUniverse(s=>s.quality);const reduced=useUniverse(s=>s.reducedMotion);const ref=useRef<ShaderMaterial>(null);
- const {positions,sizes}=useMemo(()=>{const count=qualitySettings[quality].stars,r=seededRandom(234);const positions=new Float32Array(count*3),sizes=new Float32Array(count);for(let i=0;i<count;i++){const layer=i%3;positions.set([(r()-.5)*(layer===0?230:130),(r()-.5)*(layer===0?150:100),-70+r()*140],i*3);sizes[i]=.4+r()*1.4;}return{positions,sizes};},[quality]);
- useFrame((_,delta)=>{if(ref.current&&!reduced)ref.current.uniforms.time.value+=delta;});
- return <points frustumCulled={false}><bufferGeometry><bufferAttribute attach="attributes-position" args={[positions,3]}/><bufferAttribute attach="attributes-size" args={[sizes,1]}/></bufferGeometry><shaderMaterial ref={ref} transparent depthWrite={false} blending={AdditiveBlending} uniforms={{time:{value:0}}} vertexShader={`attribute float size; varying float v; uniform float time; void main(){vec4 mv=modelViewMatrix*vec4(position,1.);gl_Position=projectionMatrix*mv;gl_PointSize=clamp(size*100./max(8.,-mv.z),.65,3.);v=.35+size*.24+sin(time*.35+position.x)*.05;}`} fragmentShader={`varying float v;void main(){float d=length(gl_PointCoord-.5);float a=1.-smoothstep(.1,.5,d);gl_FragColor=vec4(vec3(.76,.83,1.),a*v);}`}/></points>;
+
+export default function Starfield() {
+  const quality = useUniverse(s => s.quality);
+  const reduced = useUniverse(s => s.reducedMotion);
+  const ref = useRef<ShaderMaterial>(null);
+  const uniforms = useMemo(() => ({ time: { value: 0 } }), []);
+  const { positions, sizes, colors } = useMemo(() => {
+    const count = qualitySettings[quality].stars, random = seededRandom(234);
+    const positions = new Float32Array(count * 3), sizes = new Float32Array(count), colors = new Float32Array(count * 3);
+    const palette = ['#bfdcff', '#ffffff', '#f5d7ae', '#99b9ef'];
+    for (let i = 0; i < count; i++) {
+      const theta = random() * Math.PI * 2;
+      const z = random() * 2 - 1;
+      const radius = 90 + random() * 65;
+      const planar = Math.sqrt(1 - z * z);
+      positions.set([Math.cos(theta) * planar * radius, z * radius, Math.sin(theta) * planar * radius], i * 3);
+      sizes[i] = i % 37 === 0 ? 3.5 + random() * 2 : 0.6 + random() * 1.5;
+      const tint = new Color(palette[i % palette.length]);
+      colors.set([tint.r, tint.g, tint.b], i * 3);
+    }
+    return { positions, sizes, colors };
+  }, [quality]);
+  useFrame((_, delta) => { if (ref.current && !reduced) ref.current.uniforms.time.value += delta; });
+  return <points frustumCulled={false}>
+    <bufferGeometry>
+      <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
+      <bufferAttribute attach="attributes-color" args={[colors, 3]} />
+    </bufferGeometry>
+    <shaderMaterial ref={ref} transparent depthWrite={false} blending={AdditiveBlending} uniforms={uniforms} vertexShader={`
+      attribute float size;
+      attribute vec3 color;
+      varying vec3 vColor;
+      varying float vBrightness;
+      uniform float time;
+      void main() {
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = clamp(size * 210.0 / max(12.0, -mv.z), 0.8, 11.0);
+        vBrightness = 0.6 + sin(time * 0.45 + position.x) * 0.12;
+        vColor = color;
+      }
+    `} fragmentShader={`
+      varying vec3 vColor;
+      varying float vBrightness;
+      void main() {
+        vec2 p = gl_PointCoord - 0.5;
+        float d = length(p);
+        float core = exp(-d * d * 44.0);
+        float glow = exp(-d * 8.0) * 0.28;
+        float rays = exp(-abs(p.x) * 65.0) * exp(-abs(p.y) * 9.0) + exp(-abs(p.y) * 65.0) * exp(-abs(p.x) * 9.0);
+        gl_FragColor = vec4(vColor, (core + glow + rays * 0.13) * vBrightness);
+      }
+    `} />
+  </points>;
 }
