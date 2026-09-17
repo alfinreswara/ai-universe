@@ -1,3 +1,4 @@
+import { absoluteSiteUrl } from '@/lib/site';
 import { Suspense } from 'react';import ModelDirectory from '@/components/ModelDirectory';
-export const metadata={title:'Models',description:'Browse AI models by provider, capability, modality, context window, and weights. Follow official sources.',alternates:{canonical:'/models/'}};
+export const metadata={title:'Models',description:'Browse AI models by provider, capability, modality, context window, and weights. Follow official sources.',alternates:{canonical:absoluteSiteUrl('/models/')}};
 export default function ModelsPage(){return <main id="main" className="directory-page"><div className="eyebrow">THE MODEL INDEX</div><h1>Discover your next model.</h1><p className="page-description">A closer look at the intelligence inside the universe.</p><Suspense fallback={<p>Loading collection…</p>}><ModelDirectory/></Suspense></main>;}

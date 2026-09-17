@@ -1,1 +1,2 @@
-import type { MetadataRoute } from 'next';export const dynamic='force-static';export default function robots():MetadataRoute.Robots{return {rules:{userAgent:'*',allow:'/'},sitemap:(process.env.NEXT_PUBLIC_SITE_URL||'https://ai-universe-observatory.tarjosenuk.chatgpt.site')+'/sitemap.xml'};}
+import { absoluteSiteUrl } from '@/lib/site';
+import type { MetadataRoute } from 'next';export const dynamic='force-static';export default function robots():MetadataRoute.Robots{return {rules:{userAgent:'*',allow:'/'},sitemap:absoluteSiteUrl('/sitemap.xml')};}

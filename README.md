@@ -55,3 +55,9 @@ Listen to the browser's `ai-universe:analytics` CustomEvent to integrate an appr
 - `prisma/` — PostgreSQL schema and seed
 - `tests/` — data, search, URL, hierarchy, layout, quality tests
 - `docs/` — PRD, implementation decisions, QA notes
+
+## GitHub Pages
+
+The public repository is `alfinreswara/ai-universe`. Pushes to `main` run the validation/build workflow and deploy `out/` to GitHub Pages. Expected site URL: https://alfinreswara.github.io/ai-universe/.
+
+The workflow supplies `NEXT_PUBLIC_BASE_PATH=/ai-universe` and `NEXT_PUBLIC_SITE_URL=https://alfinreswara.github.io`. Next.js links and chunks, browser-history updates, copied model links, canonical URLs, and sitemap entries all support this prefix. Local development keeps an empty base path. The older `.openai/hosting.json` is inactive for GitHub Pages.

@@ -1,3 +1,4 @@
+import { absoluteSiteUrl } from '@/lib/site';
 import Link from 'next/link';import { ArrowUpRight,Orbit } from 'lucide-react';import { providers,providerModels } from '@/data/catalog';
-export const metadata={title:'Providers',alternates:{canonical:'/providers/'}};
+export const metadata={title:'Providers',alternates:{canonical:absoluteSiteUrl('/providers/')}};
 export default function ProvidersPage(){return <main id="main" className="directory-page"><div className="eyebrow">THE MINDS BEHIND THE MODELS</div><h1>Different galaxies. Shared possibility.</h1><p className="page-description">Meet the organizations building the AI ecosystem.</p><div className="provider-directory">{providers.filter(p=>p.published).map((p,i)=><Link key={p.id} className="provider-directory-row" href={`/providers/${p.slug}`}><span className="provider-number">{String(i+1).padStart(2,'0')}</span><Orbit size={36} strokeWidth={1} color={p.color}/><div><h2>{p.name}</h2><p>{p.description}</p></div><span>{providerModels(p.id).length} models</span><ArrowUpRight size={20}/></Link>)}</div></main>;}
